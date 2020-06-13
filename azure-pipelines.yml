@@ -26,7 +26,7 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
-    msbuildArgs: '/p:Configuration=Release;DeployOnBuild=True;DeployDefaultTarget=WebPublish;WebPublishMethod=FileSystem;PublishProvider=FileSystem;LastUsedBuildConfiguration=Release;ExcludeApp_Data=False;publishUrl=$(Agent.TempDirectory)/SitePackageContent/wwwroot;DeleteExistingFiles=False'
+    msbuildArgs: '/p:Configuration=Release;DeployOnBuild=True;DeployDefaultTarget=WebPublish;WebPublishMethod=FileSystem;PublishProvider=FileSystem;LastUsedBuildConfiguration=Release;ExcludeApp_Data=False;publishUrl=$(Agent.TempDirectory)/SitePackageContent/;DeleteExistingFiles=False'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
@@ -42,11 +42,12 @@ steps:
     rootFolderOrFile: '$(Agent.TempDirectory)/SitePackageContent'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/cms.app.$(Build.BuildId).nupkg'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/cms.app.$(Build.BuildId).zip'
     replaceExistingArchive: true
 
-- task: PublishBuildArtifacts@1
+- task: AzureWebApp@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'DXC Deployment Package'
-    publishLocation: 'Container'
+    azureSubscription: 'ha1'
+    appType: webApp
+    appName: 'Profirstdevopha'
+    package: $(Build.artifactStagingDirectory)/**/*.zip  
